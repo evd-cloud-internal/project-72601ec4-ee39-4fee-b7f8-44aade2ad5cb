@@ -1,12 +1,10 @@
 ---
-name: Home
-assetId: 0fbca9ac-1a13-4692-a0f4-b53949faa20d
+name: Category Detail
+assetId: 0063e563-130b-4461-ae74-e89ce4303e7e
 type: page
 ---
 
-# Drill-Down Demo: Category Summary
-
-This page shows a summary of sales by category. **Click a category name** to drill down to the detail page with that category pre-selected as a filter.
+# Category Detail
 
 ```sql mock_data
 SELECT
@@ -19,14 +17,34 @@ FROM numbers(100)
 ORDER BY category, order_date
 ```
 
+{% dropdown
+    id="category_filter"
+    data="mock_data"
+    value_column="category"
+    title="Category"
+/%}
+
+{% bar_chart
+    data="mock_data"
+    x="order_date"
+    y="sum(revenue)"
+    filters=["category_filter"]
+    date_grain="month"
+    title="Monthly Revenue"
+    fmt="usd0"
+/%}
+
 {% table
     data="mock_data"
-    title="Sales by Category"
-    subtitle="Click a category to drill down"
+    title="Order Details"
+    filters=["category_filter"]
 %}
     {% dimension
-        value="category"
-        link="concat('/category-detail?category_filter=', category)"
+        value="product"
+    /%}
+    {% dimension
+        value="order_date"
+        date_grain="month"
     /%}
     {% measure
         value="sum(revenue)"
